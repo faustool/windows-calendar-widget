@@ -23,7 +23,7 @@ public partial class MainWindow : Window
         
         // Initialize services
         _configService = new ConfigurationService();
-        _authService = new AuthenticationService();
+        _authService = new AuthenticationService(_configService);
         _calendarService = new CalendarService(_authService);
         _notificationManager = new NotificationManager(_calendarService, _configService);
         

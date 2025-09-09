@@ -9,25 +9,37 @@ namespace M365CalendarApp.WPF.Services;
 
 public class AuthenticationService
 {
-    private const string ClientId = "9b0059d1-a22e-4ed9-854b-b3304df51816";
-    private const string TenantId = "common"; // Supports both personal and work accounts
     private const string CredentialTarget = "M365CalendarApp_Token";
     
-    private static readonly string[] Scopes = new[]
-    {
-        "https://graph.microsoft.com/Calendars.Read",
-        "https://graph.microsoft.com/User.Read"
-    };
+    private readonly ConfigurationService _configService;
+    private string _clientId = "";
+    private string _tenantId = "";
+    private string[] _scopes = Array.Empty<string>();
 
     private IPublicClientApplication? _clientApp;
     private AuthenticationResult? _authResult;
 
     public bool IsAuthenticated => _authResult != null && !IsTokenExpired();
 
+    public AuthenticationService(ConfigurationService? configService = null)
+    {
+        _configService = configService ?? new ConfigurationService();
+    }
+
     public async Task<bool> InitializeAsync()
     {
         try
         {
+            // Load configuration
+            var config = await _configService.LoadConfigurationAsync();
+            _clientId = config.Authentication.ClientId;
+            _tenantId = config.Authentication.TenantId;
+            _scopes = config.Authentication.Scopes;
+
+            if (string.IsNullOrEmpty(_clientId))
+            {
+                throw new InvalidOperationException("Client ID not configured. Please set Authentication.ClientId in appsettings.json");
+            }
             // Configure MSAL cache
             var storageProperties = new StorageCreationPropertiesBuilder(
                 "M365CalendarApp.cache",
@@ -46,8 +58,8 @@ public class AuthenticationService
             var cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties);
 
             _clientApp = PublicClientApplicationBuilder
-                .Create(ClientId)
-                .WithAuthority($"https://login.microsoftonline.com/{TenantId}")
+                .Create(_clientId)
+                .WithAuthority($"https://login.microsoftonline.com/{_tenantId}")
                 .WithRedirectUri("http://localhost")
                 .WithLogging((level, message, containsPii) =>
                 {
@@ -84,7 +96,7 @@ public class AuthenticationService
             {
                 try
                 {
-                    _authResult = await _clientApp.AcquireTokenSilent(Scopes, accounts.FirstOrDefault())
+                    _authResult = await _clientApp.AcquireTokenSilent(_scopes, accounts.FirstOrDefault())
                         .ExecuteAsync();
                     
                     await StoreTokenSecurelyAsync(_authResult);
@@ -97,7 +109,7 @@ public class AuthenticationService
             }
 
             // Interactive authentication
-            _authResult = await _clientApp.AcquireTokenInteractive(Scopes)
+            _authResult = await _clientApp.AcquireTokenInteractive(_scopes)
                 .WithPrompt(Prompt.SelectAccount)
                 .WithParentActivityOrWindow(GetActiveWindowHandle())
                 .ExecuteAsync();
@@ -209,7 +221,7 @@ public class AuthenticationService
                 {
                     try
                     {
-                        _authResult = await _clientApp.AcquireTokenSilent(Scopes, accounts.FirstOrDefault())
+                        _authResult = await _clientApp.AcquireTokenSilent(_scopes, accounts.FirstOrDefault())
                             .ExecuteAsync();
                     }
                     catch (MsalUiRequiredException)

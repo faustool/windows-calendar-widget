@@ -64,7 +64,7 @@ public class ConfigurationService
             Authentication = new AuthenticationConfig
             {
                 ClientId = "9b0059d1-a22e-4ed9-854b-b3304df51816",
-                TenantId = "common",
+                TenantId = "consumers", // Personal Microsoft accounts only - change to "common" with your own Client ID
                 Scopes = new[]
                 {
                     "https://graph.microsoft.com/Calendars.Read",
