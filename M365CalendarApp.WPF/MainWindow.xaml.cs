@@ -66,14 +66,48 @@ public partial class MainWindow : Window
 
     private void ApplyTheme(bool isDark)
     {
-        var themeKey = isDark ? "DarkTheme" : "LightTheme";
-        var theme = (ResourceDictionary)Application.Current.Resources[themeKey];
-        
-        Application.Current.Resources.MergedDictionaries.Clear();
-        Application.Current.Resources.MergedDictionaries.Add(theme);
-        
-        // Update theme toggle button
-        ThemeToggleButton.Content = isDark ? "☀️" : "🌙";
+        try
+        {
+            var themeKey = isDark ? "DarkTheme" : "LightTheme";
+            System.Diagnostics.Debug.WriteLine($"Applying theme: {themeKey}");
+            
+            var theme = (ResourceDictionary)Application.Current.Resources[themeKey];
+            
+            if (theme != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Found theme dictionary with {theme.Keys.Count} keys");
+                
+                // Update the main resource dictionary with theme colors
+                foreach (var key in theme.Keys)
+                {
+                    var oldValue = Application.Current.Resources[key];
+                    Application.Current.Resources[key] = theme[key];
+                    System.Diagnostics.Debug.WriteLine($"Updated {key}: {oldValue} -> {theme[key]}");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"Theme dictionary '{themeKey}' not found!");
+            }
+            
+            // Update theme toggle button
+            ThemeToggleButton.Content = isDark ? "☀️" : "🌙";
+            
+            // Refresh the event display to apply new theme colors
+            RefreshEventDisplay();
+            
+            // Force reload events to ensure they use new theme colors
+            if (_authService.IsAuthenticated)
+            {
+                LoadCalendarEvents();
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"Theme applied successfully. Button content: {ThemeToggleButton.Content}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error applying theme: {ex.Message}");
+        }
     }
 
     private void UpdateZoomDisplay()
@@ -85,10 +119,22 @@ public partial class MainWindow : Window
         EventsScrollViewer.LayoutTransform = transform;
     }
 
-    private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
+    private async void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
     {
         _isDarkTheme = !_isDarkTheme;
         ApplyTheme(_isDarkTheme);
+        
+        // Save theme preference
+        try
+        {
+            var config = await _configService.LoadConfigurationAsync();
+            config.Application.DefaultTheme = _isDarkTheme ? "Dark" : "Light";
+            await _configService.SaveConfigurationAsync(config);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error saving theme preference: {ex.Message}");
+        }
     }
 
     private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -299,9 +345,10 @@ public partial class MainWindow : Window
 
     private void RefreshElementZoom(DependencyObject element)
     {
-        // Recursively update font sizes and button sizes for zoom
+        // Recursively update font sizes, button sizes, and theme colors
         if (element is TextBlock textBlock)
         {
+            // Update font sizes for zoom
             if (textBlock.FontWeight == FontWeights.SemiBold)
             {
                 textBlock.FontSize = 14 * _zoomFactor;
@@ -324,12 +371,39 @@ public partial class MainWindow : Window
             {
                 textBlock.MaxHeight = 60 * _zoomFactor;
             }
+            
+            // Update theme colors
+            try
+            {
+                textBlock.Foreground = (Brush)Application.Current.Resources["ForegroundBrush"];
+            }
+            catch { /* Ignore if resource not found */ }
         }
         else if (element is Button button)
         {
             button.FontSize = 10 * _zoomFactor;
             button.Width = 20 * _zoomFactor;
             button.Height = 20 * _zoomFactor;
+            
+            // Update theme colors
+            try
+            {
+                button.Foreground = (Brush)Application.Current.Resources["ForegroundBrush"];
+            }
+            catch { /* Ignore if resource not found */ }
+        }
+        else if (element is Border border)
+        {
+            // Update border theme colors
+            try
+            {
+                if (border.Style?.ToString().Contains("CalendarItemStyle") == true)
+                {
+                    border.Background = (Brush)Application.Current.Resources["SecondaryBrush"];
+                    border.BorderBrush = (Brush)Application.Current.Resources["BorderBrush"];
+                }
+            }
+            catch { /* Ignore if resource not found */ }
         }
 
         // Recursively process children
