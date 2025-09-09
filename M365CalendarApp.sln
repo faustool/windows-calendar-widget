@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M365CalendarApp.WPF", "M365CalendarApp.WPF\M365CalendarApp.WPF.csproj", "{A589DBDD-98F4-4E19-8C38-2CAB309432FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M365CalendarApp.Console", "M365CalendarApp.Console\M365CalendarApp.Console.csproj", "{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A589DBDD-98F4-4E19-8C38-2CAB309432FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A589DBDD-98F4-4E19-8C38-2CAB309432FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A589DBDD-98F4-4E19-8C38-2CAB309432FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A589DBDD-98F4-4E19-8C38-2CAB309432FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
