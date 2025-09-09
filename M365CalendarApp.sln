@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M365CalendarApp.WPF", "M365
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M365CalendarApp.Console", "M365CalendarApp.Console\M365CalendarApp.Console.csproj", "{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M365CalendarApp.Tests", "M365CalendarApp.Tests\M365CalendarApp.Tests.csproj", "{1535B943-0957-4F04-9608-839ECB52AC75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C40070D-4CCD-4FD8-9A96-542569EB0EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1535B943-0957-4F04-9608-839ECB52AC75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1535B943-0957-4F04-9608-839ECB52AC75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1535B943-0957-4F04-9608-839ECB52AC75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1535B943-0957-4F04-9608-839ECB52AC75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

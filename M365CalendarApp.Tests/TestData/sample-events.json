@@ -1,0 +1,191 @@
+[
+  {
+    "id": "event-1",
+    "subject": "Daily Standup",
+    "start": {
+      "dateTime": "2024-12-09T09:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-09T09:30:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": {
+      "displayName": "Conference Room A"
+    },
+    "bodyPreview": "Daily team standup meeting to discuss progress and blockers",
+    "isAllDay": false,
+    "showAs": "busy",
+    "sensitivity": "normal",
+    "organizer": {
+      "emailAddress": {
+        "name": "Team Lead",
+        "address": "teamlead@company.com"
+      }
+    },
+    "attendees": [
+      {
+        "emailAddress": {
+          "name": "Developer 1",
+          "address": "dev1@company.com"
+        }
+      },
+      {
+        "emailAddress": {
+          "name": "Developer 2",
+          "address": "dev2@company.com"
+        }
+      }
+    ]
+  },
+  {
+    "id": "event-2",
+    "subject": "Project Review Meeting",
+    "start": {
+      "dateTime": "2024-12-09T11:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-09T12:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": {
+      "displayName": "Meeting Room 1"
+    },
+    "bodyPreview": "Monthly project review with stakeholders",
+    "isAllDay": false,
+    "showAs": "busy",
+    "sensitivity": "normal",
+    "organizer": {
+      "emailAddress": {
+        "name": "Project Manager",
+        "address": "pm@company.com"
+      }
+    },
+    "attendees": [
+      {
+        "emailAddress": {
+          "name": "Stakeholder 1",
+          "address": "stakeholder1@company.com"
+        }
+      },
+      {
+        "emailAddress": {
+          "name": "Stakeholder 2",
+          "address": "stakeholder2@company.com"
+        }
+      },
+      {
+        "emailAddress": {
+          "name": "Developer Team",
+          "address": "devteam@company.com"
+        }
+      }
+    ]
+  },
+  {
+    "id": "event-3",
+    "subject": "Lunch with Client",
+    "start": {
+      "dateTime": "2024-12-09T12:30:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-09T13:30:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": {
+      "displayName": "Downtown Restaurant"
+    },
+    "bodyPreview": "Business lunch meeting with potential client",
+    "isAllDay": false,
+    "showAs": "oof",
+    "sensitivity": "private",
+    "organizer": {
+      "emailAddress": {
+        "name": "Sales Manager",
+        "address": "sales@company.com"
+      }
+    },
+    "attendees": [
+      {
+        "emailAddress": {
+          "name": "Client Representative",
+          "address": "client@clientcompany.com"
+        }
+      }
+    ]
+  },
+  {
+    "id": "event-4",
+    "subject": "Development Sprint Planning",
+    "start": {
+      "dateTime": "2024-12-09T14:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-09T16:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": {
+      "displayName": "Development Lab"
+    },
+    "bodyPreview": "Planning session for the next development sprint",
+    "isAllDay": false,
+    "showAs": "busy",
+    "sensitivity": "normal",
+    "organizer": {
+      "emailAddress": {
+        "name": "Scrum Master",
+        "address": "scrum@company.com"
+      }
+    },
+    "attendees": [
+      {
+        "emailAddress": {
+          "name": "Development Team",
+          "address": "devteam@company.com"
+        }
+      },
+      {
+        "emailAddress": {
+          "name": "Product Owner",
+          "address": "po@company.com"
+        }
+      }
+    ]
+  },
+  {
+    "id": "event-5",
+    "subject": "Team Retrospective",
+    "start": {
+      "dateTime": "2024-12-09T16:30:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-09T17:30:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": {
+      "displayName": "Conference Room B"
+    },
+    "bodyPreview": "Weekly team retrospective to discuss improvements",
+    "isAllDay": false,
+    "showAs": "tentative",
+    "sensitivity": "normal",
+    "organizer": {
+      "emailAddress": {
+        "name": "Team Lead",
+        "address": "teamlead@company.com"
+      }
+    },
+    "attendees": [
+      {
+        "emailAddress": {
+          "name": "Development Team",
+          "address": "devteam@company.com"
+        }
+      }
+    ]
+  }
+]

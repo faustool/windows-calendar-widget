@@ -1,0 +1,116 @@
+{
+  "scenarios": [
+    {
+      "name": "Network Timeout",
+      "errorType": "TimeoutException",
+      "errorMessage": "The operation has timed out.",
+      "httpStatusCode": null,
+      "shouldRetry": true,
+      "expectedBehavior": "Service should handle timeout gracefully and return empty results"
+    },
+    {
+      "name": "Unauthorized Access",
+      "errorType": "ServiceException",
+      "errorMessage": "Access denied. The user does not have permission to access this resource.",
+      "httpStatusCode": 401,
+      "shouldRetry": false,
+      "expectedBehavior": "Service should prompt for re-authentication"
+    },
+    {
+      "name": "Forbidden Resource",
+      "errorType": "ServiceException",
+      "errorMessage": "Forbidden. The application does not have permission to access this resource.",
+      "httpStatusCode": 403,
+      "shouldRetry": false,
+      "expectedBehavior": "Service should log error and return empty results"
+    },
+    {
+      "name": "Resource Not Found",
+      "errorType": "ServiceException",
+      "errorMessage": "The requested resource was not found.",
+      "httpStatusCode": 404,
+      "shouldRetry": false,
+      "expectedBehavior": "Service should return empty results without error"
+    },
+    {
+      "name": "Rate Limit Exceeded",
+      "errorType": "ServiceException",
+      "errorMessage": "Too many requests. Rate limit exceeded.",
+      "httpStatusCode": 429,
+      "shouldRetry": true,
+      "expectedBehavior": "Service should implement exponential backoff and retry"
+    },
+    {
+      "name": "Internal Server Error",
+      "errorType": "ServiceException",
+      "errorMessage": "Internal server error occurred.",
+      "httpStatusCode": 500,
+      "shouldRetry": true,
+      "expectedBehavior": "Service should retry with backoff and eventually return empty results"
+    },
+    {
+      "name": "Service Unavailable",
+      "errorType": "ServiceException",
+      "errorMessage": "Service temporarily unavailable.",
+      "httpStatusCode": 503,
+      "shouldRetry": true,
+      "expectedBehavior": "Service should retry and handle gracefully"
+    },
+    {
+      "name": "Invalid Token",
+      "errorType": "ServiceException",
+      "errorMessage": "The access token is invalid or expired.",
+      "httpStatusCode": 401,
+      "shouldRetry": false,
+      "expectedBehavior": "Service should attempt token refresh or prompt for re-authentication"
+    },
+    {
+      "name": "Network Connectivity",
+      "errorType": "HttpRequestException",
+      "errorMessage": "No such host is known.",
+      "httpStatusCode": null,
+      "shouldRetry": true,
+      "expectedBehavior": "Service should handle network errors and return cached data if available"
+    },
+    {
+      "name": "Proxy Authentication Required",
+      "errorType": "HttpRequestException",
+      "errorMessage": "Proxy authentication required.",
+      "httpStatusCode": 407,
+      "shouldRetry": false,
+      "expectedBehavior": "Service should prompt for proxy credentials or use default credentials"
+    }
+  ],
+  "testData": {
+    "invalidTokenResponse": {
+      "error": {
+        "code": "InvalidAuthenticationToken",
+        "message": "Access token is empty.",
+        "innerError": {
+          "request-id": "12345678-1234-1234-1234-123456789012",
+          "date": "2024-12-09T10:00:00"
+        }
+      }
+    },
+    "rateLimitResponse": {
+      "error": {
+        "code": "TooManyRequests",
+        "message": "Rate limit is exceeded. Try again in 26 seconds.",
+        "innerError": {
+          "request-id": "12345678-1234-1234-1234-123456789012",
+          "date": "2024-12-09T10:00:00"
+        }
+      }
+    },
+    "forbiddenResponse": {
+      "error": {
+        "code": "Forbidden",
+        "message": "Insufficient privileges to complete the operation.",
+        "innerError": {
+          "request-id": "12345678-1234-1234-1234-123456789012",
+          "date": "2024-12-09T10:00:00"
+        }
+      }
+    }
+  }
+}

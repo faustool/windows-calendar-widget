@@ -1,0 +1,15 @@
+{
+  "id": "user-12345",
+  "displayName": "John Doe",
+  "mail": "john.doe@company.com",
+  "userPrincipalName": "john.doe@company.com",
+  "jobTitle": "Senior Software Engineer",
+  "officeLocation": "Building 1, Floor 3",
+  "businessPhones": ["+1 555-0123"],
+  "mobilePhone": "+1 555-0124",
+  "department": "Engineering",
+  "companyName": "Contoso Ltd",
+  "preferredLanguage": "en-US",
+  "surname": "Doe",
+  "givenName": "John"
+}

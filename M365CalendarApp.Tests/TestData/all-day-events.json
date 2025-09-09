@@ -1,0 +1,83 @@
+[
+  {
+    "id": "allday-1",
+    "subject": "Company Holiday - Christmas",
+    "start": {
+      "dateTime": "2024-12-25T00:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-26T00:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": null,
+    "bodyPreview": "Company-wide holiday for Christmas",
+    "isAllDay": true,
+    "showAs": "free",
+    "sensitivity": "normal",
+    "organizer": {
+      "emailAddress": {
+        "name": "HR Department",
+        "address": "hr@company.com"
+      }
+    },
+    "attendees": []
+  },
+  {
+    "id": "allday-2",
+    "subject": "Annual Conference",
+    "start": {
+      "dateTime": "2024-12-10T00:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-12T00:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": {
+      "displayName": "Convention Center"
+    },
+    "bodyPreview": "Three-day annual technology conference",
+    "isAllDay": true,
+    "showAs": "busy",
+    "sensitivity": "normal",
+    "organizer": {
+      "emailAddress": {
+        "name": "Event Coordinator",
+        "address": "events@company.com"
+      }
+    },
+    "attendees": [
+      {
+        "emailAddress": {
+          "name": "All Employees",
+          "address": "all@company.com"
+        }
+      }
+    ]
+  },
+  {
+    "id": "allday-3",
+    "subject": "Personal Day Off",
+    "start": {
+      "dateTime": "2024-12-15T00:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2024-12-16T00:00:00.000Z",
+      "timeZone": "UTC"
+    },
+    "location": null,
+    "bodyPreview": "Personal time off",
+    "isAllDay": true,
+    "showAs": "oof",
+    "sensitivity": "private",
+    "organizer": {
+      "emailAddress": {
+        "name": "John Doe",
+        "address": "john.doe@company.com"
+      }
+    },
+    "attendees": []
+  }
+]
