@@ -92,8 +92,10 @@ The application comes pre-configured with the Client ID. You can optionally:
 - **Auto-apply**: Theme preference is saved and applied on startup
 
 ### Event Details
-- **Click/Touch**: Tap any event to see detailed information
-- **Information**: Shows subject, time, location, organizer, and attendees
+- **Click/Touch**: Tap any event to see detailed information in a popup
+- **Expand**: Click the ▼ button in the bottom-right corner of any event to expand inline details
+- **Expanded View**: Shows organizer, location, and event body description
+- **Information**: Full details include subject, time, location, organizer, attendees, and description
 
 ### Notifications
 - **Smart Reminders**: Automatic notifications based on event reminder settings

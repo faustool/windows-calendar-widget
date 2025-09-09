@@ -293,20 +293,51 @@ public partial class MainWindow : Window
         // Refresh the event display with new zoom factor
         foreach (Border eventBorder in EventsPanel.Children.OfType<Border>())
         {
-            if (eventBorder.Child is StackPanel panel)
+            RefreshElementZoom(eventBorder);
+        }
+    }
+
+    private void RefreshElementZoom(DependencyObject element)
+    {
+        // Recursively update font sizes and button sizes for zoom
+        if (element is TextBlock textBlock)
+        {
+            if (textBlock.FontWeight == FontWeights.SemiBold)
             {
-                foreach (TextBlock textBlock in panel.Children.OfType<TextBlock>())
-                {
-                    if (textBlock.FontWeight == FontWeights.SemiBold)
-                    {
-                        textBlock.FontSize = 14 * _zoomFactor;
-                    }
-                    else
-                    {
-                        textBlock.FontSize = 12 * _zoomFactor;
-                    }
-                }
+                textBlock.FontSize = 14 * _zoomFactor;
             }
+            else if (textBlock.FontSize >= 12)
+            {
+                textBlock.FontSize = 12 * _zoomFactor;
+            }
+            else if (textBlock.FontSize >= 11)
+            {
+                textBlock.FontSize = 11 * _zoomFactor;
+            }
+            else
+            {
+                textBlock.FontSize = 10 * _zoomFactor;
+            }
+            
+            // Update max height for body text
+            if (textBlock.MaxHeight > 0)
+            {
+                textBlock.MaxHeight = 60 * _zoomFactor;
+            }
+        }
+        else if (element is Button button)
+        {
+            button.FontSize = 10 * _zoomFactor;
+            button.Width = 20 * _zoomFactor;
+            button.Height = 20 * _zoomFactor;
+        }
+
+        // Recursively process children
+        int childCount = VisualTreeHelper.GetChildrenCount(element);
+        for (int i = 0; i < childCount; i++)
+        {
+            var child = VisualTreeHelper.GetChild(element, i);
+            RefreshElementZoom(child);
         }
     }
 
@@ -456,7 +487,16 @@ public partial class MainWindow : Window
         eventBorder.BorderBrush = colorBrush;
         eventBorder.BorderThickness = new Thickness(4, 1, 1, 1);
 
+        // Main container with relative positioning for expand button
+        var mainGrid = new Grid();
+        
+        // Main event content panel
         var eventPanel = new StackPanel();
+        
+        // Header with title and expand button
+        var headerGrid = new Grid();
+        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         
         // Event title
         var titleText = new TextBlock
@@ -465,8 +505,32 @@ public partial class MainWindow : Window
             FontSize = 14 * _zoomFactor,
             FontWeight = FontWeights.SemiBold,
             Foreground = (Brush)FindResource("ForegroundBrush"),
-            TextWrapping = TextWrapping.Wrap
+            TextWrapping = TextWrapping.Wrap,
+            VerticalAlignment = VerticalAlignment.Center
         };
+        Grid.SetColumn(titleText, 0);
+        
+        // Expand button
+        var expandButton = new Button
+        {
+            Content = "▼",
+            FontSize = 10 * _zoomFactor,
+            Width = 20 * _zoomFactor,
+            Height = 20 * _zoomFactor,
+            Background = Brushes.Transparent,
+            BorderThickness = new Thickness(0),
+            Foreground = (Brush)FindResource("ForegroundBrush"),
+            Opacity = 0.6,
+            Cursor = Cursors.Hand,
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Margin = new Thickness(5, 0, 0, 0),
+            ToolTip = "Expand for details"
+        };
+        Grid.SetColumn(expandButton, 1);
+        
+        headerGrid.Children.Add(titleText);
+        headerGrid.Children.Add(expandButton);
         
         // Event time
         var timeText = new TextBlock
@@ -477,20 +541,6 @@ public partial class MainWindow : Window
             Opacity = 0.7,
             Margin = new Thickness(0, 2, 0, 0)
         };
-
-        // Event location (if available)
-        if (!string.IsNullOrEmpty(eventInfo.Location))
-        {
-            var locationText = new TextBlock
-            {
-                Text = $"📍 {eventInfo.Location}",
-                FontSize = 11 * _zoomFactor,
-                Foreground = (Brush)FindResource("ForegroundBrush"),
-                Opacity = 0.6,
-                Margin = new Thickness(0, 1, 0, 0)
-            };
-            eventPanel.Children.Add(locationText);
-        }
 
         // Event duration and attendees info
         var infoPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
@@ -516,14 +566,138 @@ public partial class MainWindow : Window
             infoPanel.Children.Add(attendeesText);
         }
 
-        eventPanel.Children.Add(titleText);
+        // Expandable details panel (initially collapsed)
+        var detailsPanel = new StackPanel
+        {
+            Visibility = Visibility.Collapsed,
+            Margin = new Thickness(0, 8, 0, 0)
+        };
+
+        // Create details grid for organized layout
+        var detailsGrid = new Grid();
+        detailsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        detailsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        detailsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        detailsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+        // Organizer section
+        var organizerPanel = new StackPanel { Margin = new Thickness(0, 0, 10, 0) };
+        var organizerLabel = new TextBlock
+        {
+            Text = "Organizer:",
+            FontSize = 11 * _zoomFactor,
+            FontWeight = FontWeights.SemiBold,
+            Foreground = (Brush)FindResource("ForegroundBrush"),
+            Opacity = 0.8
+        };
+        var organizerValue = new TextBlock
+        {
+            Text = !string.IsNullOrEmpty(eventInfo.OrganizerName) ? eventInfo.OrganizerName : "Not specified",
+            FontSize = 10 * _zoomFactor,
+            Foreground = (Brush)FindResource("ForegroundBrush"),
+            Opacity = 0.7,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 1, 0, 0)
+        };
+        organizerPanel.Children.Add(organizerLabel);
+        organizerPanel.Children.Add(organizerValue);
+        Grid.SetColumn(organizerPanel, 0);
+        Grid.SetRow(organizerPanel, 0);
+
+        // Location section
+        var locationPanel = new StackPanel { Margin = new Thickness(10, 0, 0, 0) };
+        var locationLabel = new TextBlock
+        {
+            Text = "Location:",
+            FontSize = 11 * _zoomFactor,
+            FontWeight = FontWeights.SemiBold,
+            Foreground = (Brush)FindResource("ForegroundBrush"),
+            Opacity = 0.8
+        };
+        var locationValue = new TextBlock
+        {
+            Text = !string.IsNullOrEmpty(eventInfo.Location) ? eventInfo.Location : "Not specified",
+            FontSize = 10 * _zoomFactor,
+            Foreground = (Brush)FindResource("ForegroundBrush"),
+            Opacity = 0.7,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 1, 0, 0)
+        };
+        locationPanel.Children.Add(locationLabel);
+        locationPanel.Children.Add(locationValue);
+        Grid.SetColumn(locationPanel, 1);
+        Grid.SetRow(locationPanel, 0);
+
+        // Body section (spans both columns)
+        var bodyPanel = new StackPanel { Margin = new Thickness(0, 8, 0, 0) };
+        var bodyLabel = new TextBlock
+        {
+            Text = "Body:",
+            FontSize = 11 * _zoomFactor,
+            FontWeight = FontWeights.SemiBold,
+            Foreground = (Brush)FindResource("ForegroundBrush"),
+            Opacity = 0.8
+        };
+        var bodyValue = new TextBlock
+        {
+            Text = !string.IsNullOrEmpty(eventInfo.BodyPreview) ? eventInfo.BodyPreview : "No description available",
+            FontSize = 10 * _zoomFactor,
+            Foreground = (Brush)FindResource("ForegroundBrush"),
+            Opacity = 0.7,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 1, 0, 0),
+            MaxHeight = 60 * _zoomFactor // Limit height to prevent excessive expansion
+        };
+        bodyPanel.Children.Add(bodyLabel);
+        bodyPanel.Children.Add(bodyValue);
+        Grid.SetColumn(bodyPanel, 0);
+        Grid.SetRow(bodyPanel, 1);
+        Grid.SetColumnSpan(bodyPanel, 2);
+
+        detailsGrid.Children.Add(organizerPanel);
+        detailsGrid.Children.Add(locationPanel);
+        detailsGrid.Children.Add(bodyPanel);
+        detailsPanel.Children.Add(detailsGrid);
+
+        // Add all elements to main panel
+        eventPanel.Children.Add(headerGrid);
         eventPanel.Children.Add(timeText);
         eventPanel.Children.Add(infoPanel);
+        eventPanel.Children.Add(detailsPanel);
         
-        eventBorder.Child = eventPanel;
-        
-        // Add click handler for event details
-        eventBorder.MouseLeftButtonUp += (s, e) => ShowEventDetails(eventInfo);
+        mainGrid.Children.Add(eventPanel);
+        eventBorder.Child = mainGrid;
+
+        // Expand/collapse functionality
+        bool isExpanded = false;
+        expandButton.Click += (s, e) =>
+        {
+            e.Handled = true; // Prevent event bubbling
+            isExpanded = !isExpanded;
+            
+            if (isExpanded)
+            {
+                detailsPanel.Visibility = Visibility.Visible;
+                expandButton.Content = "▲";
+                expandButton.ToolTip = "Collapse details";
+            }
+            else
+            {
+                detailsPanel.Visibility = Visibility.Collapsed;
+                expandButton.Content = "▼";
+                expandButton.ToolTip = "Expand for details";
+            }
+        };
+
+        // Add click handler for event details (but not when clicking expand button)
+        eventBorder.MouseLeftButtonUp += (s, e) =>
+        {
+            // Only show details dialog if not clicking on expand button
+            if (e.OriginalSource != expandButton)
+            {
+                ShowEventDetails(eventInfo);
+            }
+        };
         
         EventsPanel.Children.Add(eventBorder);
     }
