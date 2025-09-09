@@ -14,6 +14,7 @@ public partial class MainWindow : Window
     private readonly AuthenticationService _authService;
     private readonly CalendarService _calendarService;
     private readonly ConfigurationService _configService;
+    private readonly NotificationManager _notificationManager;
     private bool _isLoading = false;
 
     public MainWindow()
@@ -24,6 +25,7 @@ public partial class MainWindow : Window
         _configService = new ConfigurationService();
         _authService = new AuthenticationService();
         _calendarService = new CalendarService(_authService);
+        _notificationManager = new NotificationManager(_calendarService, _configService);
         
         InitializeWindow();
         UpdateCurrentDateDisplay();
@@ -146,6 +148,19 @@ public partial class MainWindow : Window
                     AddNoEventsMessage();
                     StatusText.Text = $"No events found for {_currentDate:MM/dd/yyyy}";
                 }
+
+                // Update notifications for the current week when events are loaded
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _notificationManager.RefreshNotificationsAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error refreshing notifications: {ex.Message}");
+                    }
+                });
             }
             else
             {
@@ -312,6 +327,22 @@ public partial class MainWindow : Window
                 {
                     await _calendarService.InitializeAsync();
                     LoadCalendarEvents();
+                    
+                    // Initialize notifications and recover any missed ones
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await _notificationManager.RefreshNotificationsAsync();
+                            // Recover notifications that should have been shown while app was closed
+                            await Task.Delay(2000); // Wait a bit for the app to fully initialize
+                            _notificationManager.GetNotificationService()?.RecoverMissedNotifications();
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error initializing notifications: {ex.Message}");
+                        }
+                    });
                 }
             }
         }
@@ -334,6 +365,19 @@ public partial class MainWindow : Window
                 await _calendarService.InitializeAsync();
                 UpdateLoginButton();
                 LoadCalendarEvents();
+                
+                // Initialize notifications after successful login
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _notificationManager.RefreshNotificationsAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error refreshing notifications after login: {ex.Message}");
+                    }
+                });
                 
                 var user = await _calendarService.GetCurrentUserAsync();
                 if (user != null)
@@ -680,5 +724,35 @@ public partial class MainWindow : Window
         {
             // Additional touch setup can be done here if needed
         }
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        try
+        {
+            // Clean up notification manager
+            _notificationManager?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error during cleanup: {ex.Message}");
+        }
+        
+        base.OnClosed(e);
+    }
+
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+        try
+        {
+            // Save any pending notification state
+            _notificationManager?.GetNotificationService()?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error saving notification state: {ex.Message}");
+        }
+        
+        base.OnClosing(e);
     }
 }

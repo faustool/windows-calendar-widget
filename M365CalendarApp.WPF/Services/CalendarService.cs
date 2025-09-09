@@ -76,7 +76,10 @@ public class CalendarService
                         "showAs",
                         "sensitivity",
                         "organizer",
-                        "attendees"
+                        "attendees",
+                        "reminderMinutesBeforeStart",
+                        "isReminderOn",
+                        "id"
                     };
                 });
 
@@ -189,12 +192,15 @@ public class CalendarService
     {
         var eventInfo = new CalendarEventInfo
         {
+            Id = eventItem.Id ?? "",
             Subject = eventItem.Subject ?? "No Subject",
             IsAllDay = eventItem.IsAllDay ?? false,
             Location = eventItem.Location?.DisplayName ?? "",
             BodyPreview = eventItem.BodyPreview ?? "",
             ShowAs = eventItem.ShowAs?.ToString() ?? "Busy",
-            Sensitivity = eventItem.Sensitivity?.ToString() ?? "Normal"
+            Sensitivity = eventItem.Sensitivity?.ToString() ?? "Normal",
+            IsReminderOn = eventItem.IsReminderOn ?? true,
+            ReminderMinutesBeforeStart = eventItem.ReminderMinutesBeforeStart ?? 15
         };
 
         // Parse start time
@@ -234,6 +240,7 @@ public class CalendarService
 
 public class CalendarEventInfo
 {
+    public string Id { get; set; } = "";
     public string Subject { get; set; } = "";
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
@@ -245,6 +252,8 @@ public class CalendarEventInfo
     public string OrganizerName { get; set; } = "";
     public string OrganizerEmail { get; set; } = "";
     public int AttendeesCount { get; set; }
+    public bool IsReminderOn { get; set; } = true;
+    public int ReminderMinutesBeforeStart { get; set; } = 15;
 
     public string GetTimeDisplay()
     {

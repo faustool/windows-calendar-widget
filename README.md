@@ -5,6 +5,7 @@ A modern Windows 11 WPF application that connects to Microsoft 365 Calendar and 
 ## Features
 
 - **Microsoft 365 Integration**: Connects to your personal or work Microsoft account
+- **Smart Notifications**: Calendar event reminders with flexible dismiss and snooze options
 - **Touch-Friendly Interface**: Full touch support with swipe gestures for navigation
 - **Zoom Support**: Ctrl+Mouse scroll or pinch gestures to adjust text and button sizes
 - **Theme Support**: Light and dark themes with automatic switching
@@ -93,6 +94,15 @@ The application comes pre-configured with the Client ID. You can optionally:
 ### Event Details
 - **Click/Touch**: Tap any event to see detailed information
 - **Information**: Shows subject, time, location, organizer, and attendees
+
+### Notifications
+- **Smart Reminders**: Automatic notifications based on event reminder settings
+- **Flexible Snooze**: 5 snooze options including "before event" timing
+- **Working Hours**: Optional filtering to show notifications only during business hours
+- **Persistent**: Notifications are saved and restored across app restarts
+- **Auto-dismiss**: Configurable automatic dismissal after set time
+
+For detailed notification configuration and usage, see [NOTIFICATIONS.md](NOTIFICATIONS.md).
 
 ## Corporate Environment Setup
 

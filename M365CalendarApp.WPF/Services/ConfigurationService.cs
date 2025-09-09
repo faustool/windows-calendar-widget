@@ -108,6 +108,7 @@ public class AppConfiguration
     public ProxyConfig Proxy { get; set; } = new();
     public ApplicationConfig Application { get; set; } = new();
     public CalendarConfig Calendar { get; set; } = new();
+    public NotificationConfig Notifications { get; set; } = new();
 }
 
 public class AuthenticationConfig
@@ -159,4 +160,25 @@ public class CalendarConfig
     public bool ShowAllDayEvents { get; set; } = true;
     public bool ShowPrivateEvents { get; set; } = true;
     public string TimeFormat { get; set; } = "12h";
+}
+
+public class NotificationConfig
+{
+    public bool NotificationsEnabled { get; set; } = true;
+    public bool PlayNotificationSound { get; set; } = true;
+    public int DefaultReminderMinutes { get; set; } = 15;
+    public bool ShowOnlyWorkingHours { get; set; } = false;
+    public TimeSpan WorkingHoursStart { get; set; } = new TimeSpan(9, 0, 0);
+    public TimeSpan WorkingHoursEnd { get; set; } = new TimeSpan(17, 0, 0);
+    public DayOfWeek[]? WorkingDays { get; set; } = new[]
+    {
+        DayOfWeek.Monday,
+        DayOfWeek.Tuesday,
+        DayOfWeek.Wednesday,
+        DayOfWeek.Thursday,
+        DayOfWeek.Friday
+    };
+    public int MaxNotificationsPerEvent { get; set; } = 3;
+    public bool AutoDismissNotifications { get; set; } = false;
+    public int AutoDismissMinutes { get; set; } = 10;
 }

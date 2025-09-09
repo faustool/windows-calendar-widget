@@ -1,0 +1,178 @@
+<Window x:Class="M365CalendarApp.WPF.NotificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Calendar Reminder"
+        Width="400"
+        Height="300"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
+        ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <Style x:Key="NotificationButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style x:Key="DismissButtonStyle" TargetType="Button" BasedOn="{StaticResource NotificationButtonStyle}">
+            <Setter Property="Background" Value="#FFE74C3C"/>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" 
+            CornerRadius="8" 
+            BorderBrush="#FFCCCCCC" 
+            BorderThickness="1"
+            Margin="10">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" 
+                            Direction="315" 
+                            ShadowDepth="5" 
+                            Opacity="0.3" 
+                            BlurRadius="10"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Background="#FF4A90E2" Margin="-1,-1,-1,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="12,8">
+                    <TextBlock Text="📅" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock Text="Calendar Reminder" 
+                             Foreground="White" 
+                             FontWeight="SemiBold" 
+                             FontSize="14"
+                             VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" 
+                        x:Name="CloseButton"
+                        Content="×" 
+                        Background="Transparent"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Width="20"
+                        Height="20"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Margin="0,8,12,8"
+                        Click="CloseButton_Click"/>
+            </Grid>
+
+            <!-- Content -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="12">
+                <StackPanel>
+                    <TextBlock x:Name="EventSubjectText" 
+                             Text="Meeting Subject"
+                             FontSize="16" 
+                             FontWeight="SemiBold"
+                             Foreground="#FF333333"
+                             TextWrapping="Wrap"
+                             Margin="0,0,0,8"/>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                        <TextBlock Text="🕒" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock x:Name="EventTimeText" 
+                                 Text="10:00 AM - 11:00 AM"
+                                 FontSize="12"
+                                 Foreground="#FF666666"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel x:Name="LocationPanel" Orientation="Horizontal" Margin="0,0,0,4" Visibility="Collapsed">
+                        <TextBlock Text="📍" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock x:Name="EventLocationText" 
+                                 Text="Conference Room A"
+                                 FontSize="12"
+                                 Foreground="#FF666666"
+                                 VerticalAlignment="Center"
+                                 TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock Text="⏰" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock x:Name="TimeUntilEventText" 
+                                 Text="in 15 minutes"
+                                 FontSize="12"
+                                 Foreground="#FF4A90E2"
+                                 FontWeight="SemiBold"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="SnoozeCountText"
+                             Text="Snoozed 2 times"
+                             FontSize="10"
+                             Foreground="#FF999999"
+                             Margin="0,0,0,8"
+                             Visibility="Collapsed"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Action Buttons -->
+            <Grid Grid.Row="2" Margin="12,0,12,12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Snooze Options -->
+                <WrapPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+                    <Button x:Name="Snooze1MinButton" 
+                            Content="1 min" 
+                            Style="{StaticResource NotificationButtonStyle}"
+                            Click="SnoozeButton_Click"
+                            Tag="Snooze1Minute"/>
+                    <Button x:Name="Snooze5MinButton" 
+                            Content="5 min" 
+                            Style="{StaticResource NotificationButtonStyle}"
+                            Click="SnoozeButton_Click"
+                            Tag="Snooze5Minutes"/>
+                    <Button x:Name="Snooze10MinButton" 
+                            Content="10 min" 
+                            Style="{StaticResource NotificationButtonStyle}"
+                            Click="SnoozeButton_Click"
+                            Tag="Snooze10Minutes"/>
+                    <Button x:Name="Snooze5BeforeButton" 
+                            Content="5 min before" 
+                            Style="{StaticResource NotificationButtonStyle}"
+                            Click="SnoozeButton_Click"
+                            Tag="Snooze5MinutesBeforeEvent"/>
+                    <Button x:Name="Snooze10BeforeButton" 
+                            Content="10 min before" 
+                            Style="{StaticResource NotificationButtonStyle}"
+                            Click="SnoozeButton_Click"
+                            Tag="Snooze10MinutesBeforeEvent"/>
+                </WrapPanel>
+
+                <!-- Dismiss Button -->
+                <Button Grid.Row="1" 
+                        x:Name="DismissButton"
+                        Content="Dismiss" 
+                        Style="{StaticResource DismissButtonStyle}"
+                        HorizontalAlignment="Center"
+                        MinWidth="100"
+                        Click="DismissButton_Click"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
