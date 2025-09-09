@@ -37,8 +37,8 @@ public class NotificationService : IDisposable
         // Load existing notifications
         LoadNotifications();
 
-        // Start timer to check for notifications every 30 seconds
-        _checkTimer = new Timer(CheckForNotifications, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+        // Start timer to check for notifications every 30 seconds (delay initial check by 5 seconds to avoid startup issues)
+        _checkTimer = new Timer(CheckForNotifications, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30));
     }
 
     /// <summary>
@@ -226,6 +226,13 @@ public class NotificationService : IDisposable
     private void CheckForNotifications(object? state)
     {
         if (!_settings.NotificationsEnabled) return;
+        
+        // Safety check: ensure application is fully initialized
+        if (System.Windows.Application.Current?.Dispatcher == null)
+        {
+            System.Diagnostics.Debug.WriteLine("Skipping notification check - application not fully initialized");
+            return;
+        }
 
         try
         {
@@ -263,13 +270,24 @@ public class NotificationService : IDisposable
             // Trigger notifications on UI thread
             if (notificationsToShow.Any())
             {
-                System.Windows.Application.Current?.Dispatcher.BeginInvoke(() =>
+                var dispatcher = System.Windows.Application.Current?.Dispatcher;
+                if (dispatcher != null && !dispatcher.HasShutdownStarted)
                 {
-                    foreach (var notification in notificationsToShow)
+                    dispatcher.BeginInvoke(() =>
                     {
-                        NotificationTriggered?.Invoke(this, new NotificationActionEventArgs(notification, NotificationAction.Dismiss));
-                    }
-                });
+                        try
+                        {
+                            foreach (var notification in notificationsToShow)
+                            {
+                                NotificationTriggered?.Invoke(this, new NotificationActionEventArgs(notification, NotificationAction.Dismiss));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error triggering notifications: {ex.Message}");
+                        }
+                    });
+                }
             }
         }
         catch (Exception ex)
