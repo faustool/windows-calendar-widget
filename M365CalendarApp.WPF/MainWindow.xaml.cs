@@ -766,11 +766,8 @@ public partial class MainWindow : Window
         // Add click handler for event details (but not when clicking expand button)
         eventBorder.MouseLeftButtonUp += (s, e) =>
         {
-            // Only show details dialog if not clicking on expand button
-            if (e.OriginalSource != expandButton)
-            {
-                ShowEventDetails(eventInfo);
-            }
+            // Event click handler - dialog removed per user request
+            // Previously showed event details dialog
         };
         
         EventsPanel.Children.Add(eventBorder);
