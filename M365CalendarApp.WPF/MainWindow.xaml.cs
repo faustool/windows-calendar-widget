@@ -916,16 +916,34 @@ public partial class MainWindow : Window
 
     private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        var settingsWindow = new SettingsWindow(_configService)
+        try
         {
-            Owner = this
-        };
-        
-        var result = settingsWindow.ShowDialog();
-        if (result == true)
+            System.Diagnostics.Debug.WriteLine("Settings button clicked - creating SettingsWindow");
+            
+            var settingsWindow = new SettingsWindow(_configService)
+            {
+                Owner = this
+            };
+            
+            System.Diagnostics.Debug.WriteLine("SettingsWindow created successfully - showing dialog");
+            
+            var result = settingsWindow.ShowDialog();
+            
+            System.Diagnostics.Debug.WriteLine($"SettingsWindow dialog result: {result}");
+            
+            if (result == true)
+            {
+                // Reload configuration and apply changes
+                _ = ApplyConfigurationChangesAsync();
+            }
+        }
+        catch (Exception ex)
         {
-            // Reload configuration and apply changes
-            _ = ApplyConfigurationChangesAsync();
+            System.Diagnostics.Debug.WriteLine($"Error in SettingsButton_Click: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            
+            MessageBox.Show($"Error opening settings: {ex.Message}", "Settings Error", 
+                MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

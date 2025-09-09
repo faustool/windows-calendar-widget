@@ -13,7 +13,9 @@ public partial class SettingsWindow : Window
     {
         InitializeComponent();
         _configService = configService;
-        _ = LoadSettingsAsync();
+        
+        // Load settings asynchronously after the window is loaded
+        Loaded += async (s, e) => await LoadSettingsAsync();
     }
 
     private async Task LoadSettingsAsync()
